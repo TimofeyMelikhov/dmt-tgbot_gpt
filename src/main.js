@@ -6,8 +6,15 @@ import { code } from "telegraf/format";
 import config from "config";
 import { openai } from "./openai.js";
 
-// Чтение данных JSON для добавления в сессию
+const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
+
 const contextData = JSON.parse(fs.readFileSync("./src/data.json", "utf8"));
+
+const createInitialSession = () => ({
+  messages: [...INITIAL_SESSION.messages],
+});
+
+bot.use(session());
 
 const MESSAGES = {
   hello:
@@ -64,15 +71,6 @@ const INITIAL_SESSION = {
     { role: openai.roles.SYSTEM, content: `Сводка: ${contextData.summary}` },
   ],
 };
-
-// Остальной код работы бота
-const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
-
-const createInitialSession = () => ({
-  messages: [...INITIAL_SESSION.messages],
-});
-
-bot.use(session());
 
 bot.command("start", async (ctx) => {
   ctx.session = createInitialSession();
