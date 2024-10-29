@@ -1,9 +1,35 @@
 import { code } from "telegraf/format";
+import { createInitialSession } from "./sessionManager.js";
+import { MESSAGES } from "./constants.js";
+import { openai } from "./openai.js";
+
+const formatForTelegram = (text) => {
+  const transformedText = text
+    .replace(/\*\*(.*?)\*\*/g, "*$1*") // Жирный текст
+    .replace(/__(.*?)__/g, "_$1_") // Курсив
+    .replace(/`([^`]+)`/g, "`$1`") // Моноширинный текст
+    .replace(/```([^`]+)```/g, "```$1```"); // Моноширинный блок
+
+  return transformedText
+    .replace(/_/g, "\\_")
+    .replace(/~/g, "\\~")
+    .replace(/`/g, "\\`")
+    .replace(/>/g, "\\>")
+    .replace(/#/g, "\\#")
+    .replace(/\+/g, "\\+")
+    .replace(/-/g, "\\-")
+    .replace(/=/g, "\\=")
+    .replace(/\|/g, "\\|")
+    .replace(/{/g, "\\{")
+    .replace(/}/g, "\\}")
+    .replace(/\./g, "\\.")
+    .replace(/!/g, "\\!");
+};
 
 export const processTextMessage = async (ctx) => {
   ctx.session ??= createInitialSession();
+  const processingMessage = await ctx.reply(code(MESSAGES.processing));
   try {
-    await ctx.reply(code(MESSAGES.processing));
     const userText = ctx.message.text;
 
     ctx.session.messages.push({ role: openai.roles.USER, content: userText });
@@ -15,7 +41,13 @@ export const processTextMessage = async (ctx) => {
         role: openai.roles.ASSISTANT,
         content: response,
       });
-      await ctx.reply(response);
+
+      await ctx.deleteMessage(processingMessage.message_id);
+
+      const formattedResponse = formatForTelegram(response);
+      await ctx.reply(formattedResponse, { parse_mode: "MarkdownV2" });
+
+      console.log(formattedResponse);
     } else {
       await ctx.reply("Извините, не удалось получить ответ от сервера.");
     }
