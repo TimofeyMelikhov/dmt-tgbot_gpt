@@ -13,9 +13,7 @@ const loadInstructionsFromFile = (filePath) => {
   const data = fs.readFileSync(filePath, "utf8");
 
   // Разделяем данные на строки и удаляем пустые строки
-  const sections = data
-    .split("________________________________________")
-    .filter((line) => line.trim() !== "");
+  const sections = data.split("###").filter((line) => line.trim() !== "");
 
   // Формируем массив инструкций
   return sections.map((section) => ({
