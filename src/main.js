@@ -29,14 +29,13 @@ const faqMenuKeyboard = Markup.keyboard([
 // Обработчик команды /start
 bot.command("start", async (ctx) => {
   ctx.session = createInitialSession();
-  ctx.session.mode = "main";
+  ctx.session.mode = null;
   await ctx.reply(MESSAGES.hello, mainMenuKeyboard);
 });
 
-// Обработчик кнопки "/new"
 bot.hears("/new", async (ctx) => {
   ctx.session = createInitialSession();
-  ctx.session.mode = "main";
+  ctx.session.mode = null;
   await ctx.reply("История общения очищена", mainMenuKeyboard);
 });
 
@@ -128,7 +127,11 @@ bot.hears("Как положить средства в пул ликвиднос
 
 // Обработка текстовых сообщений
 bot.on(message("text"), async (ctx) => {
-  if (ctx.session.mode === "faq") {
+  if (ctx.session.mode === null) {
+    await ctx.reply(
+      "Пожалуйста, выберите режим, нажав на одну из кнопок в меню."
+    );
+  } else if (ctx.session.mode === "faq") {
     await ctx.reply(
       "Чтобы задать вопрос, вернитесь в режим чата, выбрав 'Чат с Тайсоном' в главном меню."
     );
