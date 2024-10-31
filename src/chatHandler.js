@@ -6,17 +6,19 @@ import { openai } from "./openai.js";
 const formatForTelegram = (text) => {
   // Преобразование Markdown в Telegram MarkdownV2
   const transformedText = text
-    .replace(/^# (.*?)$/gm, "*$1*") // Заголовки уровня 1 (# -> *)
-    .replace(/^## (.*?)$/gm, "*$1*") // Заголовки уровня 2 (## -> *)
-    .replace(/^### (.*?)$/gm, "*$1*") // Заголовки уровня 3 (### -> *)
-    .replace(/^#### (.*?)$/gm, "_$1_") // Заголовки уровня 4 (#### -> _)
-    .replace(/\*\*(.*?)\*\*/g, "*$1*") // Жирный текст (** -> *)
-    .replace(/__(.*?)__/g, "_$1_") // Курсив (__ -> _)
-    .replace(/`([^`]+)`/g, "`$1`") // Моноширинный текст
-    .replace(/```([^`]+)```/g, "```$1```"); // Блоки кода
+    .replace(/^# (.*?)$/gm, "*$1*")
+    .replace(/^## (.*?)$/gm, "*$1*")
+    .replace(/^### (.*?)$/gm, "*$1*")
+    .replace(/^#### (.*?)$/gm, "_$1_")
+    .replace(/\*\*(.*?)\*\*/g, "*$1*")
+    .replace(/__(.*?)__/g, "_$1_")
+    .replace(/`([^`]+)`/g, "`$1`")
+    .replace(/```([^`]+)```/g, "```$1```");
 
-  // Экранирование спецсимволов Telegram MarkdownV2
-  return transformedText.replace(/([_\~`>+\-=|{}.!])/g, "\\$1");
+  return transformedText
+    .replace(/(?<!\[.*)\(/g, "\\(")
+    .replace(/(?<!\[.*)\)/g, "\\)")
+    .replace(/([_\~`>+\-=|{}.!])/g, "\\$1");
 };
 
 export const processTextMessage = async (ctx) => {
