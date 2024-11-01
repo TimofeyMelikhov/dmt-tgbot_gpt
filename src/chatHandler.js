@@ -2,24 +2,7 @@ import { code } from "telegraf/format";
 import { createInitialSession } from "./sessionManager.js";
 import { MESSAGES } from "./constants.js";
 import { openai } from "./openai.js";
-
-const formatForTelegram = (text) => {
-  // Преобразование Markdown в Telegram MarkdownV2
-  const transformedText = text
-    .replace(/^# (.*?)$/gm, "*$1*")
-    .replace(/^## (.*?)$/gm, "*$1*")
-    .replace(/^### (.*?)$/gm, "*$1*")
-    .replace(/^#### (.*?)$/gm, "_$1_")
-    .replace(/\*\*(.*?)\*\*/g, "*$1*")
-    .replace(/__(.*?)__/g, "_$1_")
-    .replace(/`([^`]+)`/g, "`$1`")
-    .replace(/```([^`]+)```/g, "```$1```");
-
-  return transformedText
-    .replace(/(?<!\[.*)\(/g, "\\(")
-    .replace(/(?<!\[.*)\)/g, "\\)")
-    .replace(/([_\~`>+\-=|{}.!])/g, "\\$1");
-};
+import { formatForTelegram } from "./utils.js";
 
 export const processTextMessage = async (ctx) => {
   ctx.session ??= createInitialSession();
@@ -39,9 +22,7 @@ export const processTextMessage = async (ctx) => {
 
       await ctx.deleteMessage(processingMessage.message_id);
 
-      const formattedResponse = formatForTelegram(response);
-      await ctx.reply(formattedResponse, { parse_mode: "MarkdownV2" });
-      console.log(formattedResponse);
+      await ctx.reply(formatForTelegram(response), { parse_mode: "Markdown" });
     } else {
       await ctx.reply("Извините, не удалось получить ответ от сервера.");
     }
