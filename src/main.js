@@ -8,6 +8,14 @@ import { processTextMessage } from "./chatHandler.js";
 const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
 bot.use(session());
 
+// Middleware для инициализации сессии
+bot.use((ctx, next) => {
+  if (!ctx.session) {
+    ctx.session = createInitialSession();
+  }
+  return next();
+});
+
 const mainMenuKeyboard = Markup.keyboard([["FAQ", "Чат с Тайсоном"]])
   .resize()
   .oneTime();
@@ -22,6 +30,7 @@ const faqMenuKeyboard = Markup.keyboard([
 ])
   .resize()
   .oneTime();
+
 const chatMenuKeyboard = Markup.keyboard([
   ["Вернуться в главное меню", "Сбросить историю"],
 ])
@@ -29,13 +38,12 @@ const chatMenuKeyboard = Markup.keyboard([
   .oneTime();
 
 bot.command("start", async (ctx) => {
-  ctx.session = createInitialSession();
-  ctx.session.mode = null;
+  ctx.session.mode = null; // Инициализация режима
   await ctx.reply(MESSAGES.hello, mainMenuKeyboard);
 });
 
 bot.hears("Сбросить историю", async (ctx) => {
-  ctx.session = createInitialSession();
+  ctx.session = createInitialSession(); // Очищаем историю сессии
   ctx.session.mode = "chat";
   await ctx.reply("История общения сброшена", chatMenuKeyboard);
 });
@@ -97,6 +105,7 @@ bot.on(message("text"), async (ctx) => {
     processTextMessage(ctx);
   }
 });
+
 bot.telegram
   .setMyCommands([{ command: "start", description: "Начать работу" }])
   .catch((err) => console.log("Ошибка в установлении команд", err.message));
