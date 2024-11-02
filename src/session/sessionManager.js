@@ -1,5 +1,5 @@
 import fs from "fs";
-import { openai } from "./openai.js";
+import { openai } from "../services/openai.js";
 
 const instructions = [
   "Ты — бот Тайсон, дружелюбный и умный виртуальный помощник сообщества TYS, созданный, чтобы помогать пользователям уверенно ориентироваться в мире криптовалют и блокчейна. Ты знаешь всё о токенах экосистемы DMT и помогаешь новым пользователям разобраться в основах, предоставляя советы по безопасности и полезную информацию. Тайсон всегда готов ответить на вопросы о сообществе DMT, делая обучение лёгким и увлекательным.",
@@ -20,7 +20,9 @@ const loadInstructionsFromFile = (filePath) => {
   }));
 };
 
-const contextInformation = loadInstructionsFromFile("./src/instructions.txt");
+const contextInformation = loadInstructionsFromFile(
+  "./src/data/instructions.txt"
+);
 
 const initialContent = instructions.join("\n");
 const INITIAL_SESSION = {
@@ -32,9 +34,24 @@ const INITIAL_SESSION = {
     ...contextInformation,
   ],
   mode: null,
+  lastActivity: Date.now(),
 };
 
 export const createInitialSession = () => ({
   messages: [...INITIAL_SESSION.messages],
   mode: null,
+  lastActivity: Date.now(),
 });
+
+export const sessionStore = new Map();
+
+export const getSession = (userId) => {
+  if (!sessionStore.has(userId)) {
+    sessionStore.set(userId, createInitialSession());
+  }
+  return sessionStore.get(userId);
+};
+
+export const deleteSession = (userId) => {
+  sessionStore.delete(userId);
+};

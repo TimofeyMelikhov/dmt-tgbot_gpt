@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import config from "config";
+import { logError } from "../middlewares/errorLogger.js";
 
 class OpenAi {
   roles = {
@@ -23,6 +24,7 @@ class OpenAi {
       });
       return response.choices[0].message.content;
     } catch (error) {
+      logError(error);
       console.error("Error while gptchat:", error.message);
     }
   }
