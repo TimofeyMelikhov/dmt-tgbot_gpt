@@ -1,7 +1,6 @@
 import fs from "fs";
 
-// const LOG_FILE_PATH = "./logs/userLogs.json";
-const LOG_FILE_PATH = "root/dmt-tgbot_gpt/logs/userLogs.json";
+const LOG_FILE_PATH = "./logs/userLogs.json";
 
 const initializeLogFile = () => {
   if (!fs.existsSync(LOG_FILE_PATH)) {
