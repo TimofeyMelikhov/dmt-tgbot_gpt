@@ -1,7 +1,7 @@
 import fs from "fs";
 
-const LOG_FILE_PATH = "./logs/userLogs.json";
-// const LOG_FILE_PATH = "./dmt-tgbot_gpt/logs/userLogs.json";
+// const LOG_FILE_PATH = "./logs/userLogs.json";
+const LOG_FILE_PATH = "root/dmt-tgbot_gpt/logs/userLogs.json";
 
 const initializeLogFile = () => {
   if (!fs.existsSync(LOG_FILE_PATH)) {
@@ -14,8 +14,6 @@ const initializeLogFile = () => {
 
 export const logUser = (userName) => {
   initializeLogFile();
-  console.log("Current working directory:", process.cwd());
-  console.log("Expected log file path:", LOG_FILE_PATH);
 
   const logData = JSON.parse(fs.readFileSync(LOG_FILE_PATH, "utf8"));
 
