@@ -1,7 +1,7 @@
 import { session, Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
 import config from "config";
-import { getSession, sessionStore } from "./session/sessionManager.js";
+import { getSession } from "./session/sessionManager.js";
 import {
   deleteHistory,
   handleBackToMainMenuCommand,
