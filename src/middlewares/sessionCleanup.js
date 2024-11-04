@@ -2,7 +2,7 @@ import { MESSAGES } from "../constants/messages.js";
 import { mainMenuKeyboard } from "../keyboards.js";
 import { sessionStore } from "../session/sessionManager.js";
 
-const INACTIVITY_LIMIT = 30 * 1000;
+const INACTIVITY_LIMIT = 15 * 60 * 1000;
 
 export const cleanInactiveSessions = (bot) => {
   setInterval(() => {
@@ -28,5 +28,5 @@ export const cleanInactiveSessions = (bot) => {
           });
       }
     });
-  }, 30 * 1000);
+  }, 10 * 60 * 1000);
 };
