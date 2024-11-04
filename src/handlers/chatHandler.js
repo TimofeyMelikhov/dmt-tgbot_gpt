@@ -29,8 +29,10 @@ export const processTextMessage = async (ctx) => {
       await ctx.reply("Извините, не удалось получить ответ от сервера.");
     }
   } catch (error) {
-    logError(error);
-    console.log(`Error while text message:`, error.message);
-    await ctx.reply(MESSAGES.error);
+    if (error.code === 403) {
+      logError(error);
+    } else {
+      await ctx.reply(MESSAGES.error);
+    }
   }
 };
