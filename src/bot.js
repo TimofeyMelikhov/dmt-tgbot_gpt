@@ -15,16 +15,24 @@ import {
   handleWhatAreLpTokensCommand,
 } from "./handlers/commandHandler.js";
 import { cleanInactiveSessions } from "./middlewares/sessionCleanup.js";
+import { limiter } from "./utils/rateLimiter.js";
 
 const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
 
 bot.use(session());
 
-bot.use((ctx, next) => {
+bot.use(async (ctx, next) => {
   const userId = ctx.from.id;
   const session = getSession(userId);
   session.lastActivity = Date.now();
-  return next();
+  try {
+    await limiter.schedule(() => next());
+  } catch (error) {
+    logError(error);
+    if (error.code === 403) {
+      console.log(`Пользователь ${ctx.from.username} заблокирован`);
+    }
+  }
 });
 
 bot.command("start", handleStartCommand);

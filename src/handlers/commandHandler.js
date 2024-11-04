@@ -15,7 +15,7 @@ export const handleStartCommand = async (ctx) => {
     const session = getSession(userId);
     session.mode = null;
     logUser(ctx.from.username);
-    await ctx.reply(MESSAGES.hello, mainMenuKeyboard);
+    ctx.reply(MESSAGES.hello, mainMenuKeyboard);
   } catch (error) {
     logError(error);
     console.error("Error in start command:", error.message);
