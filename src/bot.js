@@ -10,6 +10,7 @@ import {
   handleDmtAndEcosystemCommand,
   handleFaqCommand,
   handleFundLiquidityPoolCommand,
+  handleliquidityAndFreezeInfoCommand,
   handlePurchaseDmtAndTokensCommand,
   handleStartCommand,
   handleWhatAreLpTokensCommand,
@@ -49,6 +50,10 @@ bot.hears("Что такое LP-токены?", handleWhatAreLpTokensCommand);
 bot.hears(
   "Как положить средства в пул ликвидности?",
   handleFundLiquidityPoolCommand
+);
+bot.hears(
+  "Как положить токены в пулы ликвидности и фризы?",
+  handleliquidityAndFreezeInfoCommand
 );
 bot.on(message("text"), handleChatCommand);
 

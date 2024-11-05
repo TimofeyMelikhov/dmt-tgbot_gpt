@@ -14,7 +14,7 @@ export const handleStartCommand = async (ctx) => {
     const userId = ctx.from.id;
     const session = getSession(userId);
     session.mode = null;
-    logUser(ctx.from.username);
+    logUser(ctx.from.username, ctx.from.id);
     ctx.reply(MESSAGES.hello, mainMenuKeyboard);
   } catch (error) {
     logError(error);
@@ -98,6 +98,11 @@ export const handleWhatAreLpTokensCommand = async (ctx) => {
 
 export const handleFundLiquidityPoolCommand = async (ctx) => {
   await ctx.reply(MESSAGES.fundLiquidityPool, {
+    parse_mode: "Markdown",
+  });
+};
+export const handleliquidityAndFreezeInfoCommand = async (ctx) => {
+  await ctx.reply(MESSAGES.liquidityAndFreezeInfo, {
     parse_mode: "Markdown",
   });
 };

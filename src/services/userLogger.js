@@ -11,14 +11,16 @@ const initializeLogFile = () => {
   }
 };
 
-export const logUser = (userName) => {
+export const logUser = (userName, userId) => {
   initializeLogFile();
+
+  const uniqueName = userName || `user_id_${userId}`;
 
   const logData = JSON.parse(fs.readFileSync(LOG_FILE_PATH, "utf8"));
 
-  if (!logData.userNames.includes(userName)) {
+  if (!logData.userNames.includes(uniqueName)) {
     logData.totalUsers += 1;
-    logData.userNames.push(userName);
+    logData.userNames.push(uniqueName);
 
     fs.writeFileSync(LOG_FILE_PATH, JSON.stringify(logData, null, 2));
   }
